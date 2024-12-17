@@ -1,15 +1,11 @@
-import Image from "next/image";
-import Hero from "@/components/Hero";
+import Hero from '@/components/Hero';
+import FeaturedBooks from '@/components/FeaturedBooks';
 
 export default function Home() {
-  return(
-    <div>
+  return (
+    <>
       <Hero />
-      <div className="container mx-auto py-20">
-        <h2 className="text-3xl font-bold text-center mb-8">Featured Books</h2>
-        
-      </div>
-    </div>
-  )
-
+      <FeaturedBooks />
+    </>
+  );
 }
