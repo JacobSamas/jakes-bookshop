@@ -6,6 +6,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong"; // Orders Icon
 import { gsap } from "gsap";
 import { useSelector } from "react-redux";
 
@@ -13,7 +14,7 @@ const Navbar = () => {
   const [navOpen, setNavOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const { items } = useSelector((state) => state.cart);
+  const { items, orders } = useSelector((state) => state.cart);
 
   const mobileMenuRef = useRef(null);
   const logoRef = useRef(null);
@@ -64,8 +65,8 @@ const Navbar = () => {
           Jake&apos;s Bookshop
         </Link>
 
-        {/* Desktop & Mobile Icons */}
-        <div className="flex space-x-6 items-center">
+        {/* Desktop & Tablet Icons */}
+        <div className="hidden md:flex space-x-6 items-center">
           <Link href="/cart" aria-label="Cart" className="relative">
             <ShoppingCartIcon
               fontSize="large"
@@ -74,6 +75,18 @@ const Navbar = () => {
             {items.length > 0 && (
               <span className="absolute -top-2 -right-3 bg-red-500 text-white rounded-full px-2 py-1 text-sm">
                 {items.length}
+              </span>
+            )}
+          </Link>
+
+          <Link href="/orders" aria-label="Orders" className="relative">
+            <ReceiptLongIcon
+              fontSize="large"
+              className="hover:text-secondary transition"
+            />
+            {orders.length > 0 && (
+              <span className="absolute -top-2 -right-3 bg-green-500 text-white rounded-full px-2 py-1 text-sm">
+                {orders.length}
               </span>
             )}
           </Link>
@@ -88,20 +101,20 @@ const Navbar = () => {
           {/* Login/Logout Button (Desktop Only) */}
           <button
             onClick={handleAuth}
-            className="hover:text-secondary transition font-medium hidden md:inline-block"
+            className="hover:text-secondary transition font-medium"
           >
             {isLoggedIn ? "Logout" : "Login"}
           </button>
-
-          {/* Hamburger Menu Button (Mobile) */}
-          <button
-            className="md:hidden focus:outline-none"
-            aria-label={navOpen ? "Close Menu" : "Open Menu"}
-            onClick={() => setNavOpen(!navOpen)}
-          >
-            <MenuIcon fontSize="large" className="animate-pulse" />
-          </button>
         </div>
+
+        {/* Hamburger Menu Button (Mobile) */}
+        <button
+          className="md:hidden focus:outline-none"
+          aria-label={navOpen ? "Close Menu" : "Open Menu"}
+          onClick={() => setNavOpen(!navOpen)}
+        >
+          <MenuIcon fontSize="large" className="animate-pulse" />
+        </button>
       </div>
 
       {/* Right-Side Half-Page Mobile Menu */}
@@ -130,6 +143,13 @@ const Navbar = () => {
           className="hover:text-secondary transition"
         >
           Cart
+        </Link>
+        <Link
+          href="/orders"
+          onClick={() => setNavOpen(false)}
+          className="hover:text-secondary transition"
+        >
+          Orders
         </Link>
         <Link
           href="/favorites"

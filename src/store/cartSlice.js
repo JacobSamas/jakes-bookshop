@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   items: [],
   totalAmount: 0,
+  orders: [], 
 };
 
 const cartSlice = createSlice({
@@ -18,6 +19,7 @@ const cartSlice = createSlice({
       }
       state.totalAmount += action.payload.price;
     },
+
     removeFromCart: (state, action) => {
       const itemIndex = state.items.findIndex((item) => item.slug === action.payload.slug);
       if (itemIndex !== -1) {
@@ -25,8 +27,19 @@ const cartSlice = createSlice({
         state.items.splice(itemIndex, 1);
       }
     },
+
+    placeOrder: (state, action) => {
+      state.orders.push({
+        orderId: Date.now(),
+        items: [...state.items],
+        totalAmount: state.totalAmount,
+        customerDetails: action.payload,
+      });
+      state.items = []; 
+      state.totalAmount = 0; 
+    },
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, placeOrder } = cartSlice.actions;
 export default cartSlice.reducer;
