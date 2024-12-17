@@ -1,17 +1,35 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   items: [],
   totalAmount: 0,
-  orders: [], 
+  orders: [],
+  favorites: [], // Correct Favorites State
 };
 
 const cartSlice = createSlice({
-  name: 'cart',
+  name: "cart",
   initialState,
   reducers: {
+    addToFavorites: (state, action) => {
+      const exists = state.favorites.some(
+        (item) => item.slug === action.payload.slug
+      );
+      if (!exists) {
+        state.favorites.push(action.payload); // Add unique favorite
+      }
+    },
+
+    removeFromFavorites: (state, action) => {
+      state.favorites = state.favorites.filter(
+        (item) => item.slug !== action.payload.slug
+      );
+    },
+
     addToCart: (state, action) => {
-      const existingItem = state.items.find((item) => item.slug === action.payload.slug);
+      const existingItem = state.items.find(
+        (item) => item.slug === action.payload.slug
+      );
       if (existingItem) {
         existingItem.quantity += 1;
       } else {
@@ -21,11 +39,9 @@ const cartSlice = createSlice({
     },
 
     removeFromCart: (state, action) => {
-      const itemIndex = state.items.findIndex((item) => item.slug === action.payload.slug);
-      if (itemIndex !== -1) {
-        state.totalAmount -= state.items[itemIndex].price * state.items[itemIndex].quantity;
-        state.items.splice(itemIndex, 1);
-      }
+      state.items = state.items.filter(
+        (item) => item.slug !== action.payload.slug
+      );
     },
 
     placeOrder: (state, action) => {
@@ -35,11 +51,18 @@ const cartSlice = createSlice({
         totalAmount: state.totalAmount,
         customerDetails: action.payload,
       });
-      state.items = []; 
-      state.totalAmount = 0; 
+      state.items = [];
+      state.totalAmount = 0;
     },
   },
 });
 
-export const { addToCart, removeFromCart, placeOrder } = cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  placeOrder,
+  addToFavorites,
+  removeFromFavorites,
+} = cartSlice.actions;
+
 export default cartSlice.reducer;
