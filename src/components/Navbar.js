@@ -7,15 +7,18 @@ import CloseIcon from "@mui/icons-material/Close";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { gsap } from "gsap";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [navOpen, setNavOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const { items } = useSelector((state) => state.cart);
+
   const mobileMenuRef = useRef(null);
   const logoRef = useRef(null);
 
-  // Logo Animation on Load
+  // Logo Animation
   useEffect(() => {
     gsap.fromTo(
       logoRef.current,
@@ -24,7 +27,7 @@ const Navbar = () => {
     );
   }, []);
 
-  // Menu Animation on Open/Close
+  // Mobile Menu Animation
   useEffect(() => {
     if (navOpen) {
       gsap.to(mobileMenuRef.current, {
@@ -43,6 +46,7 @@ const Navbar = () => {
     }
   }, [navOpen]);
 
+  // Toggle Login/Logout
   const handleAuth = () => {
     setIsLoggedIn(!isLoggedIn);
     setNavOpen(false);
@@ -62,14 +66,26 @@ const Navbar = () => {
 
         {/* Desktop & Mobile Icons */}
         <div className="flex space-x-6 items-center">
-          <Link href="/cart" aria-label="Cart">
-            <ShoppingCartIcon fontSize="large" className="hover:text-secondary transition" />
-          </Link>
-          <Link href="/favorites" aria-label="Favorites">
-            <FavoriteIcon fontSize="large" className="hover:text-secondary transition" />
+          <Link href="/cart" aria-label="Cart" className="relative">
+            <ShoppingCartIcon
+              fontSize="large"
+              className="hover:text-secondary transition"
+            />
+            {items.length > 0 && (
+              <span className="absolute -top-2 -right-3 bg-red-500 text-white rounded-full px-2 py-1 text-sm">
+                {items.length}
+              </span>
+            )}
           </Link>
 
-          {/* Login/Logout Button */}
+          <Link href="/favorites" aria-label="Favorites">
+            <FavoriteIcon
+              fontSize="large"
+              className="hover:text-secondary transition"
+            />
+          </Link>
+
+          {/* Login/Logout Button (Desktop Only) */}
           <button
             onClick={handleAuth}
             className="hover:text-secondary transition font-medium hidden md:inline-block"
@@ -77,7 +93,7 @@ const Navbar = () => {
             {isLoggedIn ? "Logout" : "Login"}
           </button>
 
-          {/* Hamburger Menu Button */}
+          {/* Hamburger Menu Button (Mobile) */}
           <button
             className="md:hidden focus:outline-none"
             aria-label={navOpen ? "Close Menu" : "Open Menu"}
@@ -88,7 +104,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Right-Side Half-Page Menu */}
+      {/* Right-Side Half-Page Mobile Menu */}
       <div
         ref={mobileMenuRef}
         className="fixed top-0 right-0 h-full w-1/2 bg-black bg-opacity-90 z-50 flex flex-col justify-start items-start p-8 space-y-8 text-xl translate-x-full"
