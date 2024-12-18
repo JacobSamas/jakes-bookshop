@@ -24,22 +24,18 @@ export default function Orders() {
       <div className="space-y-8">
         {orders.map((order) => (
           <div key={order.orderId} className="border p-6 rounded-md shadow-md">
-            <h2 className="text-2xl font-bold text-gray-800">Order #{order.orderId}</h2>
-            <p className="text-lg text-gray-600">Customer: {order.customerDetails.fullName}</p>
-            <p className="text-lg text-gray-600">Email: {order.customerDetails.email}</p>
-            <p className="text-lg text-gray-600">Address: {order.customerDetails.address}</p>
-
-            <h3 className="text-xl font-bold text-gray-800 mt-4">Order Summary:</h3>
-            {order.items.map((item) => (
-              <div key={item.slug} className="flex justify-between">
-                <p>{item.title} - x{item.quantity}</p>
-                <p>${item.price.toFixed(2)}</p>
-              </div>
-            ))}
-
-            <h3 className="text-xl font-bold text-gray-800 mt-4">
-              Total Amount: ${order.totalAmount.toFixed(2)}
-            </h3>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Order #{order.orderId}
+            </h2>
+            <p className="text-gray-600">Total Amount: ${order.totalAmount.toFixed(2)}</p>
+            <h3 className="text-xl font-semibold text-gray-800 mt-4">Items:</h3>
+            <ul className="list-disc list-inside">
+              {order.items.map((item, index) => (
+                <li key={`${item.slug}-${index}`} className="text-gray-600">
+                  {item.title} - ${item.price} x {item.quantity}
+                </li>
+              ))}
+            </ul>
           </div>
         ))}
       </div>

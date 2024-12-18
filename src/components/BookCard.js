@@ -5,6 +5,8 @@ import { gsap } from 'gsap';
 import { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToFavorites, removeFromFavorites, addToCart } from '@/store/cartSlice';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
@@ -13,12 +15,10 @@ const BookCard = ({ title, author, price, image, link, slug }) => {
   const imageRef = useRef(null);
   const dispatch = useDispatch();
 
-  // Directly Check Favorites from Redux State
   const { favorites } = useSelector((state) => state.cart);
   const isFavorited = favorites.some((item) => item.slug === slug);
 
   useEffect(() => {
-    // GSAP Animations
     gsap.fromTo(
       cardRef.current,
       { opacity: 0, y: 50 },
@@ -32,6 +32,7 @@ const BookCard = ({ title, author, price, image, link, slug }) => {
     );
   }, []);
 
+  // Add to Cart with Toast Notification
   const handleAddToCart = () => {
     dispatch(
       addToCart({
@@ -42,12 +43,14 @@ const BookCard = ({ title, author, price, image, link, slug }) => {
         image,
       })
     );
-    alert(`${title} added to cart!`);
+    toast.success(`${title} added to cart!`);
   };
 
+  // Toggle Favorites with Toast Notification
   const handleToggleFavorite = () => {
     if (isFavorited) {
       dispatch(removeFromFavorites({ slug }));
+      toast.info(`${title} removed from favorites!`);
     } else {
       dispatch(
         addToFavorites({
@@ -58,6 +61,7 @@ const BookCard = ({ title, author, price, image, link, slug }) => {
           image,
         })
       );
+      toast.success(`${title} added to favorites!`);
     }
   };
 
